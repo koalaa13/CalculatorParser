@@ -1,9 +1,9 @@
 package expression;
 
-import parser.Token;
+import parser.TokenEnum;
 
 public class Div extends Operation {
     public Div() {
-        super(1, Token.DIV);
+        super(1, TokenEnum.DIV);
     }
 }

@@ -1,31 +1,30 @@
 package parser;
 
 import exception.ParsingException;
-import expression.Begin;
-import expression.TokenRepresentation;
-import parser.Token;
-import parser.Tokenizer;
+import expression.Token;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.List;
 
 public class Parser {
-    public List<TokenRepresentation> getTokens(
+    public List<Token> getTokens(
             String expression) throws ParsingException, NoSuchMethodException, InvocationTargetException, InstantiationException, IllegalAccessException {
         Tokenizer tokenizer = new Tokenizer(expression);
-        List<TokenRepresentation> res = new ArrayList<>();
-        res.add(new Begin());
-        while (tokenizer.hasNextToken()) {
-            Token token = tokenizer.getNextToken();
-            TokenRepresentation curTokenRepresentation;
-            if (token == Token.NUMBER) {
-                int value = tokenizer.getValue();
-                curTokenRepresentation = token.getTokenRepresentationClass().getConstructor(Integer.TYPE).newInstance(value);
-            } else {
-                curTokenRepresentation = token.getTokenRepresentationClass().getConstructor().newInstance();
+        List<Token> res = new ArrayList<>();
+        while (true) {
+            TokenEnum tokenEnum = tokenizer.getNextToken();
+            if (tokenEnum == TokenEnum.END) {
+                break;
             }
-            res.add(curTokenRepresentation);
+            Token curToken;
+            if (tokenEnum == TokenEnum.NUMBER) {
+                int value = tokenizer.getValue();
+                curToken = tokenEnum.getTokenRepresentationClass().getConstructor(Integer.TYPE).newInstance(value);
+            } else {
+                curToken = tokenEnum.getTokenRepresentationClass().getConstructor().newInstance();
+            }
+            res.add(curToken);
         }
         return res;
     }

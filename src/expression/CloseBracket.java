@@ -1,9 +1,9 @@
 package expression;
 
-import parser.Token;
+import parser.TokenEnum;
 
-public class CloseBracket extends TokenRepresentation {
+public class CloseBracket extends Bracket {
     public CloseBracket() {
-        super(Token.CLOSE_BRACKET);
+        super(TokenEnum.CLOSE_BRACKET);
     }
 }

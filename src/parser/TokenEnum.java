@@ -1,9 +1,9 @@
 package parser;
 
-import expression.*;
 import expression.Number;
+import expression.*;
 
-public enum Token {
+public enum TokenEnum {
     ADD(Add.class),
     SUB(Sub.class),
     MUL(Mul.class),
@@ -11,16 +11,16 @@ public enum Token {
     OPEN_BRACKET(OpenBracket.class),
     CLOSE_BRACKET(CloseBracket.class),
     NUMBER(Number.class),
-    BEGIN(Begin.class),
-    END(End.class);
+    BEGIN(null),
+    END(null);
 
-    private final Class<? extends TokenRepresentation> tokenRepresentationClass;
+    private final Class<? extends Token> tokenRepresentationClass;
 
-    Token(Class<? extends TokenRepresentation> tokenRepresentationClass) {
+    TokenEnum(Class<? extends Token> tokenRepresentationClass) {
         this.tokenRepresentationClass = tokenRepresentationClass;
     }
 
-    public Class<? extends TokenRepresentation> getTokenRepresentationClass() {
+    public Class<? extends Token> getTokenRepresentationClass() {
         return tokenRepresentationClass;
     }
 }

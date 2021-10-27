@@ -1,12 +1,13 @@
 package expression;
 
-import parser.Token;
+import parser.TokenEnum;
+import visitor.TokenVisitor;
 
-public class Number extends TokenRepresentation {
+public class Number extends Token {
     private final int value;
 
     public Number(int value) {
-        super(Token.NUMBER);
+        super(TokenEnum.NUMBER);
         this.value = value;
     }
 
@@ -15,7 +16,12 @@ public class Number extends TokenRepresentation {
     }
 
     @Override
+    public void accept(TokenVisitor visitor) throws Exception {
+        visitor.visit(this);
+    }
+
+    @Override
     public String toString() {
-        return token.toString() + '(' + value + ')';
+        return tokenEnum.toString() + '(' + value + ')';
     }
 }

@@ -7,20 +7,20 @@ import java.util.HashSet;
 public class Tokenizer {
     private final String expression;
     private int ind, value, balance;
-    private Token curToken;
-    private static final HashSet<Token> binaryOperations = new HashSet<>();
+    private TokenEnum curTokenEnum;
+    private static final HashSet<TokenEnum> binaryOperations = new HashSet<>();
 
     public Tokenizer(String newExpression) {
         expression = newExpression;
         ind = balance = 0;
-        curToken = Token.BEGIN;
+        curTokenEnum = TokenEnum.BEGIN;
     }
 
     static {
-        binaryOperations.add(Token.ADD);
-        binaryOperations.add(Token.SUB);
-        binaryOperations.add(Token.MUL);
-        binaryOperations.add(Token.DIV);
+        binaryOperations.add(TokenEnum.ADD);
+        binaryOperations.add(TokenEnum.SUB);
+        binaryOperations.add(TokenEnum.MUL);
+        binaryOperations.add(TokenEnum.DIV);
     }
 
     public String getExpression() {
@@ -35,17 +35,13 @@ public class Tokenizer {
         return value;
     }
 
-    public Token getCurToken() {
-        return curToken;
+    public TokenEnum getCurToken() {
+        return curTokenEnum;
     }
 
-    public Token getNextToken() throws ParsingException {
+    public TokenEnum getNextToken() throws ParsingException {
         nextToken();
-        return curToken;
-    }
-
-    public boolean hasNextToken() {
-        return curToken != Token.END;
+        return curTokenEnum;
     }
 
     private void skipWhiteSpaces() {
@@ -76,13 +72,13 @@ public class Tokenizer {
     }
 
     private void checkForOperand() throws MissingOperandException {
-        if (curToken == Token.BEGIN || curToken == Token.OPEN_BRACKET || binaryOperations.contains(curToken)) {
+        if (curTokenEnum == TokenEnum.BEGIN || curTokenEnum == TokenEnum.OPEN_BRACKET || binaryOperations.contains(curTokenEnum)) {
             throw new MissingOperandException(expression, ind);
         }
     }
 
     private void checkForOperation() throws MissingOperationException {
-        if (curToken == Token.CLOSE_BRACKET || curToken == Token.NUMBER) {
+        if (curTokenEnum == TokenEnum.CLOSE_BRACKET || curTokenEnum == TokenEnum.NUMBER) {
             throw new MissingOperationException(expression, ind);
         }
     }
@@ -91,26 +87,26 @@ public class Tokenizer {
         skipWhiteSpaces();
         if (ind >= expression.length()) {
             checkForOperand();
-            curToken = Token.END;
+            curTokenEnum = TokenEnum.END;
             return;
         }
         char c = expression.charAt(ind);
         switch (c) {
             case '+':
                 checkForOperand();
-                curToken = Token.ADD;
+                curTokenEnum = TokenEnum.ADD;
                 break;
             case '*':
                 checkForOperand();
-                curToken = Token.MUL;
+                curTokenEnum = TokenEnum.MUL;
                 break;
             case '/':
                 checkForOperand();
-                curToken = Token.DIV;
+                curTokenEnum = TokenEnum.DIV;
                 break;
             case '-':
-                if (curToken == Token.NUMBER || curToken == Token.CLOSE_BRACKET) {
-                    curToken = Token.SUB;
+                if (curTokenEnum == TokenEnum.NUMBER || curTokenEnum == TokenEnum.CLOSE_BRACKET) {
+                    curTokenEnum = TokenEnum.SUB;
                 } else {
                     if (ind + 1 >= expression.length()) {
                         throw new MissingOperandException(expression, ind);
@@ -118,35 +114,35 @@ public class Tokenizer {
                         if (isPartOfNumber(expression.charAt(ind + 1))) {
                             ind++;
                             value = getInt("-" + getNumber());
-                            curToken = Token.NUMBER;
+                            curTokenEnum = TokenEnum.NUMBER;
                         } else {
-                            curToken = Token.SUB;
+                            curTokenEnum = TokenEnum.SUB;
                         }
                     }
                 }
                 break;
             case '(':
-                if (curToken == Token.CLOSE_BRACKET || curToken == Token.NUMBER) {
+                if (curTokenEnum == TokenEnum.CLOSE_BRACKET || curTokenEnum == TokenEnum.NUMBER) {
                     throw new MissingOperationException(expression, ind);
                 }
                 balance++;
-                curToken = Token.OPEN_BRACKET;
+                curTokenEnum = TokenEnum.OPEN_BRACKET;
                 break;
             case ')':
-                if (binaryOperations.contains(curToken) || curToken == Token.OPEN_BRACKET) {
+                if (binaryOperations.contains(curTokenEnum) || curTokenEnum == TokenEnum.OPEN_BRACKET) {
                     throw new MissingOperandException(expression, ind);
                 }
                 if (balance == 0) {
                     throw new UnpairedBracketsException("There is unpaired close bracket in a expression", expression, ind);
                 }
                 balance--;
-                curToken = Token.CLOSE_BRACKET;
+                curTokenEnum = TokenEnum.CLOSE_BRACKET;
                 break;
             default:
                 if (Character.isDigit(c)) {
                     checkForOperation();
                     value = getInt(getNumber());
-                    curToken = Token.NUMBER;
+                    curTokenEnum = TokenEnum.NUMBER;
                 } else {
                     throw new ParsingException("Parsing error happened", expression, ind);
                 }

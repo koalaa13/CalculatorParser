@@ -1,9 +1,9 @@
 package expression;
 
-import parser.Token;
+import parser.TokenEnum;
 
-public class OpenBracket extends TokenRepresentation {
+public class OpenBracket extends Bracket {
     public OpenBracket() {
-        super(Token.OPEN_BRACKET);
+        super(TokenEnum.OPEN_BRACKET);
     }
 }

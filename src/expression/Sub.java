@@ -1,9 +1,9 @@
 package expression;
 
-import parser.Token;
+import parser.TokenEnum;
 
 public class Sub extends Operation {
     public Sub() {
-        super(0, Token.SUB);
+        super(0, TokenEnum.SUB);
     }
 }
